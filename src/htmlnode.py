@@ -14,7 +14,7 @@ class HTMLNode:
         )
 
     def to_html(self):
-        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+        raise NotImplementedError("to_html method not implemented")
 
     def props_to_html(self):
         result = ""
@@ -37,7 +37,6 @@ class LeafNode(HTMLNode):
 
         if self.tag is None:
             return self.value
-        # raise NotImplementedError("to_html method not implemented")
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
     def __repr__(self):
