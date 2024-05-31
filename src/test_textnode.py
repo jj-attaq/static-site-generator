@@ -1,32 +1,41 @@
 import unittest
 
-from textnode import TextNode
+from textnode import (
+    TextNode,
+    text_type_text,
+    text_type_bold,
+    text_type_italic,
+    text_type_code,
+    text_type_image,
+    text_type_link,
+)
 
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):
-        node = TextNode("This is a text node", "bold")
-        node2 = TextNode("This is a text node", "bold")
+        node = TextNode("This is a text node", text_type_text)
+        node2 = TextNode("This is a text node", text_type_text)
         self.assertEqual(node, node2)
 
-        node3 = TextNode("This is a text node", "bold", "www.example.com")
-        node4 = TextNode("This is a text node", "bold")
-        self.assertNotEqual(node3, node4)
+    def test_eq_false(self):
+        node = TextNode("This is a text node", text_type_text)
+        node2 = TextNode("This is a text node", text_type_bold)
+        self.assertNotEqual(node, node2)
 
-        node5 = TextNode("This is a text node", "bold", "www.example.com")
-        node6 = TextNode(None, "bold", "www.example.com")
-        self.assertNotEqual(node5, node6)
+    def test_eq_false2(self):
+        node = TextNode("This is a text node", text_type_text)
+        node2 = TextNode("This is a text node2", text_type_text)
+        self.assertNotEqual(node, node2)
 
-        node7 = TextNode("This is a text node", "bold", "www.example.com")
-        node8 = TextNode("This is a text node", "bold", None)
-        self.assertNotEqual(node7, node8)
+    def test_eq_url(self):
+        node = TextNode("This is a text node", text_type_text, "https://www.boot.dev")
+        node2 = TextNode("This is a text node", text_type_text, "https://www.boot.dev")
+        self.assertEqual(node, node2)
 
-    # def test_repr(self):
-    #     node = TextNode("This is a text node", "bold", "www.example.com")
     def test_repr(self):
-        node = TextNode("This is a text node", "bold", "www.example.com")
+        node = TextNode("This is a text node", text_type_text, "https://www.boot.dev")
         self.assertEqual(
-            "TextNode(This is a text node, bold, www.example.com)", repr(node)
+            "TextNode(This is a text node, text, https://www.boot.dev)", repr(node)
         )
 
 

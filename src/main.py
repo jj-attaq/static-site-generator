@@ -1,10 +1,11 @@
 from textnode import TextNode
-# from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node
 
 
 def main():
-    node = TextNode("This is a text node", "bold", "https://www.boot.dev")
-    print(node.__repr__())
+    node = TextNode("This is a text node", "link", "https://www.boot.dev")
+    print(text_node_to_html_node(node))
+
     # print("========================================")
     # node2 = LeafNode(tag='a', value='Click me!', props={'href': 'https://example.com', 'target': '_blank'})
     # print(node2.props_to_html())
