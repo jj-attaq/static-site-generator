@@ -1,10 +1,27 @@
-from textnode import TextNode
-from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node
+from textnode import (
+    text_type_text,
+    text_type_bold,
+    text_type_italic,
+    text_type_code,
+    text_type_link,
+    text_type_image,
+    TextNode,
+    text_node_to_html_node,
+)
+from inline_markdown import split_nodes_delimiter
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 def main():
     node = TextNode("This is a text node", "link", "https://www.boot.dev")
     print(text_node_to_html_node(node))
+
+    # node2 = TextNode("This is a node with **bold** text.", text_type_text)
+    # print(split_nodes_delimiter([node2], "**", text_type_bold))
+
+    node3 = TextNode("This is a `code block` example", text_type_text)
+    print(split_nodes_delimiter([node3], "`", text_type_code))
+
 
     # print("========================================")
     # node2 = LeafNode(tag='a', value='Click me!', props={'href': 'https://example.com', 'target': '_blank'})

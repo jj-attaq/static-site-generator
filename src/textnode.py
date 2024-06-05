@@ -53,3 +53,28 @@ def text_node_to_html_node(text_node):
 
     else:
         raise Exception("text_node needs valid type")
+
+
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    result = []
+
+    for node in old_nodes:
+        if node.text_type == text_type_text:
+            split_node = node.text.split(delimiter)
+            inside_delimiter = False
+
+            for s_node in split_node:
+                print(f'Splitting: "{s_node}" inside_delimiter: {inside_delimiter}')
+                if inside_delimiter:
+                    result.append(TextNode(s_node, text_type))
+                else:
+                    result.append(TextNode(s_node, "text"))
+                # print(inside_delimiter)
+                inside_delimiter = not inside_delimiter
+            if len(split_node) % 2 == 0:
+                raise ValueError("Mismatched delimiter")
+
+        else:
+            result.append(node)
+
+    return result
