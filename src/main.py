@@ -12,19 +12,16 @@ from inline_markdown import (
     # split_nodes_delimiter,
     # extract_markdown_images,
     # extract_markdown_links,
-    split_nodes_image,
-    split_nodes_link
+    text_to_textnodes
     )
 
 
 def main():
-    # Testing with no images and no links
-    node = TextNode("This text has no images or links.", text_type_text)
-    new_image_nodes = split_nodes_image([node])
-    new_link_nodes = split_nodes_link([node])
+    text = "This is **text** with an *italic* word and a `code block` and an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and a [link](https://boot.dev)"
 
-    print(new_image_nodes)  # Expecting: [TextNode("This text has no images or links.", text_type_text)]
-    print(new_link_nodes)   # Expecting: [TextNode("This text has no images or links.", text_type_text)]
+    nodes = text_to_textnodes(text)
+    for node in nodes:
+        print(node)
 
 
 main()
