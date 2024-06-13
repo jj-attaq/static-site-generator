@@ -44,34 +44,94 @@ def extract_markdown_links(text):
 def split_nodes_image(old_nodes):
     result = []
     for old_node in old_nodes:
+        if old_node.text_type != text_type_text:
+            result.append(old_node)
+            continue
         text = old_node.text
-        new_nodes = []
         image_tup = extract_markdown_images(text)
-        for img in image_tup:
-            split = text.split(f"![{img[0]}]({img[1]})", 1)
-            text = split[1]
-            new_nodes.append(TextNode(split[0], text_type_text))
-            new_nodes.append(TextNode(img[0], text_type_image, img[1]))
-        result.append(new_nodes)
+        if not image_tup:
+            result.append(TextNode(text, text_type_text))
+            continue  # Skip to the next old_node if no images found
 
-        for i in range(len(new_nodes)):
-            print(new_nodes[i], end="\n")
+        for image in image_tup:
+            split = text.split(f"![{image[0]}]({image[1]})", 1)
+            text = split[1]
+            if split[0]:
+                result.append(TextNode(split[0], text_type_text))
+            result.append(TextNode(image[0], text_type_image, image[1]))
+        if text:
+            result.append(TextNode(text, text_type_text))
     return result
 
 
 def split_nodes_link(old_nodes):
     result = []
     for old_node in old_nodes:
+        if old_node.text_type != text_type_text:
+            result.append(old_node)
+            continue
         text = old_node.text
-        new_nodes = []
-        link_tup = extract_markdown_images(text)
+        link_tup = extract_markdown_links(text)
+        if not link_tup:
+            result.append(TextNode(text, text_type_text))
+            continue  # Skip to the next old_node if no links found
+
         for link in link_tup:
             split = text.split(f"[{link[0]}]({link[1]})", 1)
             text = split[1]
-            new_nodes.append(TextNode(split[0], text_type_text))
-            new_nodes.append(TextNode(link[0], text_type_image, link[1]))
-        result.append(new_nodes)
-
-        for i in range(len(new_nodes)):
-            print(new_nodes[i], end="\n")
+            if split[0]:
+                result.append(TextNode(split[0], text_type_text))
+            result.append(TextNode(link[0], text_type_link, link[1]))
+        if text:
+            result.append(TextNode(text, text_type_text))
     return result
+
+# ORIGINAL BELOW
+# def split_nodes_image(old_nodes):
+#     result = []
+#     for old_node in old_nodes:
+#         if old_node.text_type != text_type_text:
+#             result.append(old_node)
+#             continue
+#         text = old_node.text
+#         image_tup = extract_markdown_images(text)
+#         if image_tup == []:
+#             result.append(TextNode(text, text_type_text))
+#         for i in range(len(image_tup)):
+#             split = text.split(f"![{image_tup[i][0]}]({image_tup[i][1]})", 1)
+#             text = split[1]
+#             if split[0] != "":
+#                 result.append(TextNode(split[0], text_type_text))
+#             result.append(TextNode(image_tup[i][0], text_type_image, image_tup[i][1]))
+#             if i == len(image_tup) - 1 and split[1] != "":
+#                 result.append(TextNode(split[1], text_type_text))
+#         #
+#         # for i in range(len(result)):
+#         #     print(result[i], end="\n")
+#     return result
+#
+#
+# def split_nodes_link(old_nodes):
+#     result = []
+#     for old_node in old_nodes:
+#         if old_node.text_type != text_type_text:
+#             result.append(old_node)
+#             continue
+#         text = old_node.text
+#         link_tup = extract_markdown_links(text)
+#         if not link_tup:
+#             result.append(TextNode(text, text_type_text))
+#             continue
+#         for i in range(len(link_tup)):
+#             split = text.split(f"[{link_tup[i][0]}]({link_tup[i][1]})", 1)
+#             text = split[1]
+#             if split[0] != "":
+#                 result.append(TextNode(split[0], text_type_text))
+#             result.append(TextNode(link_tup[i][0], text_type_link, link_tup[i][1]))
+#             if i == len(link_tup) - 1 and split[1] != "":
+#                 result.append(TextNode(split[1], text_type_text))
+#         #
+#         # for i in range(len(result)):
+#         #     print(result[i], end="\n")
+#     return result
+
