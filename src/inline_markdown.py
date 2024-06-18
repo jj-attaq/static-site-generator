@@ -86,50 +86,61 @@ def split_nodes_link(old_nodes):
             result.append(TextNode(text, text_type_text))
     return result
 
+
 def text_to_textnodes(text):
-    result = []
-    # First turn text into textnode so that the other functions can behave accordingly
-    original_node = TextNode(text, text_type_text)
-    images = split_nodes_image([original_node])
-    unformatted_nodes = []
-    for node in images:
-        if node.text_type == text_type_text:
-            links = split_nodes_link([node])
-            for link_node in links:
-                unformatted_nodes.append(link_node)
-        else:
-            unformatted_nodes.append(node)
-    # for node in unformatted_nodes:
-    # result.append(node)
-    formatted_nodes = []
-    for node in unformatted_nodes:
-        if node.text_type == text_type_text:
-            bold = split_nodes_delimiter([node], "**", text_type_bold)
-            for new_node in bold:
-                formatted_nodes.append(new_node)
-        else:
-            formatted_nodes.append(node)
+    nodes = [TextNode(text, text_type_text)]
+    nodes = split_nodes_delimiter(nodes, "**", text_type_bold)
+    nodes = split_nodes_delimiter(nodes, "*", text_type_italic)
+    nodes = split_nodes_delimiter(nodes, "`", text_type_code)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
 
-    new_formatted_nodes = []
-    for node in formatted_nodes:
-        if node.text_type == text_type_text:
-            italic = split_nodes_delimiter([node], "*", text_type_italic)
-            for new_node in italic:
-                new_formatted_nodes.append(new_node)
-        else:
-            new_formatted_nodes.append(node)
 
-    final_formatted_nodes = []
-    for node in new_formatted_nodes:
-        if node.text_type == text_type_text:
-            code = split_nodes_delimiter([node], "`", text_type_code)
-            for new_node in code:
-                final_formatted_nodes.append(new_node)
-        else:
-            final_formatted_nodes.append(node)
+# def text_to_textnodes(text):
+#     result = []
+#     original_node = TextNode(text, text_type_text)
+#     images = split_nodes_image([original_node])
+#     unformatted_nodes = []
+#     for node in images:
+#         if node.text_type == text_type_text:
+#             links = split_nodes_link([node])
+#             for link_node in links:
+#                 unformatted_nodes.append(link_node)
+#         else:
+#             unformatted_nodes.append(node)
+#
+#     formatted_nodes = []
+#     for node in unformatted_nodes:
+#         if node.text_type == text_type_text:
+#             bold = split_nodes_delimiter([node], "**", text_type_bold)
+#             for new_node in bold:
+#                 formatted_nodes.append(new_node)
+#         else:
+#             formatted_nodes.append(node)
+#
+#     new_formatted_nodes = []
+#     for node in formatted_nodes:
+#         if node.text_type == text_type_text:
+#             italic = split_nodes_delimiter([node], "*", text_type_italic)
+#             for new_node in italic:
+#                 new_formatted_nodes.append(new_node)
+#         else:
+#             new_formatted_nodes.append(node)
+#
+#     final_formatted_nodes = []
+#     for node in new_formatted_nodes:
+#         if node.text_type == text_type_text:
+#             code = split_nodes_delimiter([node], "`", text_type_code)
+#             for new_node in code:
+#                 final_formatted_nodes.append(new_node)
+#         else:
+#             final_formatted_nodes.append(node)
+#
+#     result = final_formatted_nodes
+#     return result
 
-    result = final_formatted_nodes
-    return result
+
 # ORIGINAL BELOW
 # def split_nodes_image(old_nodes):
 #     result = []
