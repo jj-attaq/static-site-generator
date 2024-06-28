@@ -1,7 +1,8 @@
-from htmlnode import (
-    LeafNode,
-    ParentNode
-)
+from htmlnode import ParentNode
+
+from inline_markdown import text_to_textnodes
+
+from textnode import text_node_to_html_node
 
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
@@ -58,57 +59,97 @@ def block_to_block_type(block):
     return block_type_paragraph
 
 
+def block_to_html_node(block):
+    block_type = block_to_block_type(block)
+    if block_type == block_type_paragraph:
+        return convert_paragraph_to_html_node(block)
+    if block_type == block_type_heading:
+        return convert_heading_to_html_node(block)
+    if block_type == block_type_code:
+        return convert_code_to_html_node(block)
+    if block_type == block_type_olist:
+        return convert_olist_to_html_node(block)
+    if block_type == block_type_ulist:
+        return convert_ulist_to_html_node(block)
+    if block_type == block_type_quote:
+        return convert_quote_to_html_node(block)
+    raise ValueError("Invalid block type")
+
+
+def text_to_children(text):
+    text_nodes = text_to_textnodes(text)
+    children = []
+    for node in text_nodes:
+        children.append(text_node_to_html_node(node))
+    return children
+
+
 def convert_paragraph_to_html_node(block):
-    return ""
+    lines = block.split("\n")
+    paragraph = " ".join(lines)
+    children = text_to_children(paragraph)
+    return ParentNode("p", children)
 
 
 def convert_heading_to_html_node(block):
-    # def __init__(self, tag, children, props=None):
-    # def __init__(self, tag, value, props=None):
-    count = block.count('#', 0, block.find(' '))
-    content = content = block.lstrip('# ').strip()
-    node = ParentNode(f"h{count}", content)
-    return node
+    level = 0
+    for char in block:
+        if char == "#":
+            level += 1
+        else:
+            break
+    if level + 1 >= len(block):
+        raise ValueError(f"Invalid heading level: {level}")
+    text = block[level + 1 :]
+    children = text_to_children(text)
+    return ParentNode(f"h{level}", children)
 
 
 def convert_code_to_html_node(block):
-    return ""
+    if not block.startswith("```") or not block.endswith("```"):
+        raise ValueError("Invalid code block")
+    text = block[4:3]
+    children = text_to_children(text)
+    code = ParentNode("code", children)
+    return ParentNode("pre", [code])
 
 
 def convert_quote_to_html_node(block):
-    return ""
+    lines = block.split("\n")
+    new_lines = []
+    for line in lines:
+        if not line.startswith(">"):
+            raise ValueError("Invalid quote block")
+        new_lines.append(line.lstrip(">").strip())
+    content = " ".join(new_lines)
+    children = text_to_children(content)
+    return ParentNode("blockquote", children)
 
 
 def convert_ulist_to_html_node(block):
-    return ""
+    items = block.split("\n")
+    html_items = []
+    for item in items:
+        text = item[2:]
+        children = text_to_children(text)
+        html_items.append(ParentNode("li", children))
+    return ParentNode("ul", html_items)
 
 
 def convert_olist_to_html_node(block):
-    return ""
+    items = block.split("\n")
+    html_items = []
+    for item in items:
+        text = item[3:]
+        children = text_to_children(text)
+        html_items.append(ParentNode("li", children))
+    return ParentNode("ol", html_items)
 
 
 def markdown_to_html_node(markdown):
-    # That top-level HTMLNode should just be a <div>, where each child is a block of the document. Each block should have its own "inline" children.
     blocks = markdown_to_blocks(markdown)
-
-    def block_types(b):
-        block_types = []
-        for block in b:
-            block_types.append(block_to_block_type(block))
-        return block_types
-
-    blocks_and_types = list(zip(blocks, block_types(blocks)))
-
-    for b_and_t in blocks_and_types:
-        if b_and_t[1] == block_type_paragraph:
-            convert_paragraph_to_html_node(b_and_t[0])
-        if b_and_t[1] == block_type_heading:
-            convert_heading_to_html_node(b_and_t[0])
-        if b_and_t[1] == block_type_code:
-            convert_code_to_html_node(b_and_t[0])
-        if b_and_t[1] == block_type_quote:
-            convert_quote_to_html_node(b_and_t[0])
-        if b_and_t[1] == block_type_ulist:
-            convert_ulist_to_html_node(b_and_t[0])
-        if b_and_t[1] == block_type_olist:
-            convert_olist_to_html_node(b_and_t[0])
+    children = []
+    for block in blocks:
+        html_node = block_to_html_node(block)
+        children.append(html_node)
+    return ParentNode("div", children, None)

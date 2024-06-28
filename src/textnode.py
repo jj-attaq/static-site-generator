@@ -34,22 +34,23 @@ def text_node_to_html_node(text_node):
             return url
 
     if text_node.text_type == text_type_text:
-        return LeafNode(value=text_node.text).to_html()
+        # return LeafNode(value=text_node.text).to_html()
+        return LeafNode(None, text_node.text)
 
     elif text_node.text_type == text_type_bold:
-        return LeafNode(tag="b", value=text_node.text).to_html()
+        return LeafNode(tag="b", value=text_node.text)
 
     elif text_node.text_type == text_type_italic:
-        return LeafNode(tag="i", value=text_node.text).to_html()
+        return LeafNode(tag="i", value=text_node.text)
 
     elif text_node.text_type == text_type_code:
-        return LeafNode(tag="code", value=text_node.text).to_html()
+        return LeafNode(tag="code", value=text_node.text)
 
     elif text_node.text_type == text_type_link:
-        return LeafNode(tag="a", value=text_node.text, props={"href": get_valid_url()}).to_html()
+        return LeafNode(tag="a", value=text_node.text, props={"href": get_valid_url()})
 
     elif text_node.text_type == text_type_image:
-        return LeafNode(tag="img", value="", props={"src": get_valid_url(), "alt": text_node.text}).to_html()
+        return LeafNode(tag="img", value="", props={"src": get_valid_url(), "alt": text_node.text})
 
     else:
         raise Exception("text_node needs valid type")
