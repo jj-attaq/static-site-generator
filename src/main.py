@@ -1,27 +1,14 @@
-from textnode import (
-    text_type_text,
-    text_type_bold,
-    text_type_italic,
-    text_type_code,
-    text_type_link,
-    text_type_image,
-    TextNode,
-    text_node_to_html_node,
-)
-from inline_markdown import (
-    # split_nodes_delimiter,
-    # extract_markdown_images,
-    # extract_markdown_links,
-    text_to_textnodes
-    )
+import os
 
 
 def main():
-    text = "This is **text** with an *italic* word and a `code block` and an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and a [link](https://boot.dev)"
+    current = os.listdir('.')
 
-    nodes = text_to_textnodes(text)
-    for node in nodes:
-        print(node)
+    for dir in current:
+        if os.path.isfile(f'{dir}'):
+            print(dir)
+            continue
+        print(os.listdir(f'{dir}'))
 
 
 main()
