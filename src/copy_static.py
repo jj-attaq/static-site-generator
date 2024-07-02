@@ -1,9 +1,16 @@
 import os
 
 
-def copy_static():
-    dir = input('Enter dir name: ')
-    if not os.path.exists(dir):
-        raise ValueError('Path does not exist')
-
-    print(os.listdir(dir))
+def copy_static(dir='.'):
+    current_path = dir
+    contents = os.listdir(current_path)
+    for el in contents:
+        if os.path.isfile(el):
+            print(el)
+            continue
+        else:
+            new_path = os.path.join(current_path, el)
+            if os.path.isfile(new_path):
+                print(new_path)
+            else:
+                copy_static(new_path)
