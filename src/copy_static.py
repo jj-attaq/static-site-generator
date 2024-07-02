@@ -3,8 +3,6 @@ import shutil
 
 
 def copy_static(dir='.', dest='./public/'):
-    # delete ./public
-    # shutil.rmtree(dest)
     current_path = dir
     contents = os.listdir(current_path)
     for el in contents:
