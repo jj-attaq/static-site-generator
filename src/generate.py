@@ -1,5 +1,5 @@
 import os
-import shutil
+# import shutil
 
 from markdown_blocks import markdown_to_html_node
 
@@ -26,5 +26,15 @@ def generate_page(from_path, template_path, dest_path):
     html = markdown_to_html_node(md).to_html()
     title = extract_title(md)
 
+    template = template.replace('{{ Title }}', title)
+    template = template.replace('{{ Content }}', html)
 
-generate_page('./content/index.md', './template.html', '')
+    dir = os.path.dirname(dest_path)
+    os.makedirs(dir)
+
+    file = open(dest_path, 'w')
+    file.write(template)
+#
+#
+#
+# generate_page('./content/index.md', './template.html', 'hoho/lala/haha.html')
